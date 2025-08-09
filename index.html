@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emploi du temps – Master MLSD & AMSD</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   <canvas id="space" aria-hidden="true"></canvas>
+
+  <!-- HEADER -->
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><div class="logo" aria-hidden="true"></div><div>Master <span style="color:var(--brand)">MLSD</span> & <span style="color:var(--brand-2)">AMSD</span></div></div>
+      <nav class="links" aria-label="Navigation principale">
+        <a href="#planning" class="active" data-section="planning">Planning</a>
+        <a href="#calendar" data-section="calendar">Calendrier</a>
+        <a href="#presentation" data-section="presentation">Présentation du Master</a>
+        <a href="#terms" data-section="terms">Termes</a>
+        <a href="#plan" data-section="plan">Plan</a>
+    </nav>
+
+      <div class="actions">
+        <a class="btn" href="https://intranet.u-paris.fr/" target="_blank" rel="noopener">Intranet</a>
+        <a class="btn" href="https://moodle.u-paris.fr/" target="_blank" rel="noopener">Moodle</a>
+        
+        <button class="btn" id="themeToggle" aria-label="Basculer le thème">🌓</button>
+      </div>
+    </div>
+  </header>
+  <!-- === Prochains cours : popover === -->
+  <div id="next-popover" class="popover" hidden>
+    <div class="popover-inner">
+      <div class="popover-title">À venir</div>
+      <ul id="next-list" class="popover-list"></ul>
+    </div>
+  </div>
+  <!-- MAIN -->
+  <main class="wrap">
+    <!-- PLANNING -->
+    <section id="planning" class="reveal">
+      <div class="card">
+        <div class="pill"><span class="dot"></span> Prochain cours <span id="nextTitle" style="margin-left:6px; font-weight:800"></span></div>
+        <h1 class="h1">Emploi du temps – Semaine en cours</h1>
+
+
+        <div class="widget">
+          <div class="row">
+            <div class="seg">
+              <div class="view-toggle" role="tablist" aria-label="Type de vue">
+                <button class="chip active" data-mode="WEEK" role="tab" aria-selected="true">Semaine</button>
+                <button class="chip" data-mode="AGENDA" role="tab" aria-selected="false">Agenda</button>
+                <button class="chip" data-mode="MONTH" role="tab" aria-selected="false">Mois</button>
+              </div>
+            </div>
+            <div class="seg" style="text-align:right">
+              <button class="btn" id="prevWeek" title="Semaine précédente">◀</button>
+              <button class="btn" id="today" title="Aujourd'hui">Aujourd'hui</button>
+              <button class="btn" id="nextWeek" title="Semaine suivante">▶</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="seg kbd">Timezone : Europe/Paris</div>
+            <div class="seg" style="text-align:right"><span class="kbd">Début du prochain cours dans</span> <span class="countdown" id="countdown">—</span></div>
+          </div>
+          <div class="calendar-shell reveal d2">
+            <iframe id="gcal" class="cal" title="Google Calendar embedded"></iframe>
+          </div>
+          <p class="sub">Si le calendrier ne s'affiche pas correctement, <a href="https://docs.google.com/spreadsheets/d/1IhyeM39QryPrYvrWcEFiChPrkVHD4Sw3/edit?gid=51203610#gid=51203610" target="_blank" rel="noopener">consulte la version de secours</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendar" class="reveal d2" hidden>
+      <div class="card">
+        <h2 class="h1">Calendrier de formation 2025–2026</h2>
+        <img src="calendrier2025.png" alt="Calendrier MLSD FI & FA " style="width:100%; border-radius:14px; border:1px solid var(--card-border)"/>
+        <p class="sub">Valable pour MLSD FI & FA (2025–2026).</p>
+      </div>
+    </section>
+
+    <section id="presentation" class="reveal d2" hidden>
+        <div class="card">
+            <h2 class="h1">Présentation du Master</h2>
+            <p class="sub">Document officiel 2024–2025.</p>
+
+        <iframe
+            src="M1_Presentation_Master_MLSD-AMSD-24-25-3.pdf"
+            width="100%"
+            height="600"
+            style="border-radius:14px; border:1px solid var(--card-border)"
+        ></iframe>
+
+            <p style="margin-top:12px">
+                <a class="btn" href="M1_Presentation_Master_MLSD-AMSD-24-25-3.pdf" target="_blank" rel="noopener">
+                📄 Télécharger le PDF
+                </a>
+            </p>
+        </div>
+    </section>
+
+    <section id="terms" class="reveal d2" hidden>
+  <div class="card">
+    <h2 class="h1">Termes statistiques essentiels</h2>
+    <div class="terms-filters">
+  <button data-cat="all" class="active">🌐 Tout</button>
+  <button data-cat="stats">📊 Statistiques de base</button>
+  <button data-cat="proba">🎯 Probabilités</button>
+  <button data-cat="regression">📈 Régression</button>
+  <button data-cat="ml">🤖 Machine Learning</button>
+  <button data-cat="algebra">🔢 Algèbre linéaire</button>
+</div>
+
+    <div class="terms-search">
+  <input id="termsSearch" type="search"
+         placeholder="Rechercher un terme (ex : variance, Poisson, ROC)…"
+         autocomplete="off" />
+  <span class="kbd" id="termsCount"></span>
+</div>
+    <div class="terms-content">
+      <p data-cat="stats"><strong>Variance :</strong> Mesure de la dispersion des données autour de la moyenne. Plus la variance est grande, plus les données sont dispersées.</p>
+
+      <p data-cat="stats"><strong>Biais (Bias) :</strong> Différence entre la valeur attendue d'un estimateur et la vraie valeur d'un paramètre. Un modèle biaisé peut manquer de précision.</p>
+
+      <p data-cat="stats"><strong>Écart-type (Standard Deviation) :</strong> Racine carrée de la variance. Il exprime la dispersion des données par rapport à la moyenne dans la même unité que les données.</p>
+
+      <p data-cat="stats"><strong>Quartiles :</strong> Valeurs qui divisent un ensemble de données en quatre parties égales. Le premier quartile (Q1), la médiane (Q2), et le troisième quartile (Q3).</p>
+
+      <p data-cat="proba"><strong>Loi de Bernoulli :</strong> Loi de probabilité qui décrit une expérience aléatoire ayant deux issues possibles (succès ou échec), avec une probabilité fixe de succès.</p>
+
+      <p data-cat="proba"><strong>Loi binomiale :</strong> Généralisation de la loi de Bernoulli pour plusieurs essais indépendants. Elle modélise le nombre de succès dans un nombre d'essais donnés.</p>
+
+      <p data-cat="proba"><strong>Loi normale (Gaussian Distribution) :</strong> Distribution de probabilité symétrique en forme de cloche, caractérisée par la moyenne et l'écart-type. Très utilisée pour modéliser des phénomènes naturels.</p>
+
+      <p data-cat="proba"><strong>Loi de Poisson :</strong> Distribution de probabilité qui modélise le nombre d'événements se produisant dans un intervalle de temps ou d'espace, sous certaines conditions.</p>
+
+      <p data-cat="stats"><strong>Espérance mathématique (Expected Value) :</strong> Moyenne pondérée des résultats d'une variable aléatoire. C'est la valeur centrale attendue d'une expérience aléatoire.</p>
+
+      <p data-cat="proba"><strong>P-value :</strong> Probabilité de rejeter l'hypothèse nulle alors qu'elle est vraie. Utilisée dans les tests d'hypothèses pour évaluer la significativité statistique.</p>
+
+      <p data-cat="stats"><strong>Intervalle de confiance (Confidence Interval) :</strong> Plage de valeurs qui, avec une certaine probabilité, contient la vraie valeur d'un paramètre statistique.</p>
+
+      <p data-cat="regression"><strong>Régression linéaire :</strong> Technique statistique utilisée pour modéliser la relation entre une variable dépendante et une ou plusieurs variables indépendantes.</p>
+
+      <p data-cat="ml"><strong>Surapprentissage (Overfitting) :</strong> Situation où un modèle est trop ajusté aux données d'entraînement, ce qui nuit à sa généralisation sur des données nouvelles.</p>
+
+      <p data-cat="ml"><strong>Sous-apprentissage (Underfitting) :</strong> Modèle trop simple pour capturer les relations sous-jacentes dans les données, conduisant à une mauvaise performance.</p>
+
+      <p data-cat="ml,stats"><strong>Matrice de confusion :</strong> Tableau utilisé pour évaluer la performance d'un modèle de classification en comptant les vraies et fausses prédictions.</p>
+
+      <p data-cat="stats"><strong>Test d'hypothèse :</strong> Méthode statistique pour tester une affirmation sur un paramètre de population en utilisant les données d'un échantillon.</p>
+
+      <p data-cat="stats"><strong>Bootstrap :</strong> Technique de rééchantillonnage qui permet d'estimer les propriétés d'un estimateur en rééchantillonnant avec remplacement.</p>
+
+      <p data-cat="stats"><strong>AIC/BIC :</strong> Critères utilisés pour comparer différents modèles statistiques et choisir le meilleur modèle en fonction de sa qualité ajustée.</p>
+
+      <p data-cat="ml,stats"><strong>Analyse en composantes principales (ACP) :</strong> Méthode de réduction de dimensionnalité qui transforme des variables corrélées en nouvelles variables non corrélées tout en conservant l'essentiel de la variance.</p>
+
+      <p data-cat="algebra"><strong>Matrice :</strong> Un tableau de nombres disposés en lignes et en colonnes, utilisé pour organiser des ensembles de données et des transformations linéaires.</p>
+
+      <p data-cat="stats,algebra"><strong>Covariance :</strong> Mesure de la manière dont deux variables varient ensemble. Si la covariance est positive, les deux variables augmentent ensemble, si elle est négative, elles varient en sens inverse.</p>
+
+      <p data-cat="algebra"><strong>Matrice de covariance :</strong> Matrice carrée qui présente les covariances entre chaque paire de variables dans un ensemble de données.</p>
+
+      <p data-cat="algebra"><strong>Vecteur :</strong> Une liste ordonnée de nombres qui représente une quantité ayant une direction et une magnitude. Les vecteurs sont utilisés dans des espaces de haute dimension.</p>
+
+      <p data-cat="algebra"><strong>Autovalues (Valeurs propres) :</strong> Les scalaires associés aux vecteurs propres d'une matrice. Utilisées pour comprendre des caractéristiques fondamentales des transformations linéaires.</p>
+
+      <p data-cat="algebra"><strong>Autovecteurs (Vecteurs propres) :</strong> Les vecteurs associés aux valeurs propres qui ne changent pas de direction lors de la transformation par une matrice.</p>
+
+      <p data-cat="regression"><strong>Régularisation :</strong> Technique utilisée pour ajouter une pénalité aux modèles statistiques afin d’éviter le surapprentissage.</p>
+
+      <p data-cat="regression"><strong>Régression Ridge :</strong> Forme de régression linéaire qui inclut une régularisation L2 pour pénaliser les grands coefficients afin de réduire le surapprentissage.</p>
+
+      <p data-cat="regression"><strong>Régression Lasso :</strong> Forme de régression linéaire qui inclut une régularisation L1 pour favoriser la parcimonie en forçant certains coefficients à zéro.</p>
+
+      <p data-cat="ml"><strong>Gradient Descent :</strong> Algorithme d'optimisation utilisé pour minimiser la fonction de coût dans les modèles d’apprentissage machine.</p>
+
+      <p data-cat="stats"><strong>Matrice de corrélation :</strong> Une matrice qui montre la corrélation entre chaque paire de variables. Utile pour repérer les relations linéaires entre les variables.</p>
+
+      <p data-cat="proba"><strong>Loi des grands nombres :</strong> Théorème indiquant que, à mesure que le nombre d'échantillons augmente, la moyenne d’un échantillon approche la moyenne théorique de la population.</p>
+
+      <p data-cat="proba"><strong>Théorème central limite :</strong> Théorème stipulant que la somme ou la moyenne de variables aléatoires indépendantes tend vers une distribution normale à mesure que la taille de l’échantillon augmente.</p>
+
+      <p data-cat="stats"><strong>Maximum de vraisemblance (MLE) :</strong> Méthode d’estimation des paramètres d’un modèle statistique en maximisant une fonction de vraisemblance.</p>
+
+      <p data-cat="ml"><strong>Algorithme K-means :</strong> Algorithme de clustering non supervisé qui partitionne les données en k groupes en minimisant la distance intra-cluster.</p>
+
+      <p data-cat="ml"><strong>Réseaux bayésiens :</strong> Structures de données en forme de graphe qui représentent les relations probabilistes entre des variables.</p>
+
+      <p data-cat="ml"><strong>K-Nearest Neighbors (K-NN) :</strong> Algorithme utilisé pour la classification basé sur la similarité des points voisins dans l'espace des données.</p>
+
+      <p data-cat="algebra"><strong>Distance euclidienne :</strong> Mesure de la distance directe entre deux points dans un espace multi-dimensionnel. Utilisée dans les algorithmes de clustering.</p>
+
+      <p data-cat="stats"><strong>Normalisation et standardisation :</strong> Techniques de prétraitement des données qui ramènent les données dans un intervalle fixe ou une distribution normalisée.</p>
+
+      <p data-cat="stats"><strong>Test de Chi-carré :</strong> Test statistique utilisé pour déterminer si une relation existe entre deux variables catégorielles.</p>
+
+      <p data-cat="regression"><strong>Méthode des moindres carrés :</strong> Méthode utilisée pour ajuster un modèle de régression en minimisant la somme des carrés des différences entre les valeurs observées et prédites.</p>
+
+      <p data-cat="stats"><strong>Variance expliquée :</strong> Proportion de la variance totale d'un ensemble de données qui est expliquée par un modèle statistique.</p>
+
+      <p data-cat="stats"><strong>Effet de levier (Leverage) :</strong> Mesure de l'influence d'un point de données sur la régression.</p>
+
+      <p data-cat="stats"><strong>Information Entropy (Entropie) :</strong> Mesure de l'incertitude ou de la quantité d'information contenue dans une variable aléatoire.</p>
+
+      <p data-cat="stats"><strong>Mutual Information :</strong> Mesure de la dépendance entre deux variables, quantifiant combien connaître la valeur d'une variable réduit l'incertitude de l'autre.</p>
+
+      <p data-cat="ml,stats"><strong>Cross-validation :</strong> Technique utilisée pour évaluer la performance d’un modèle en le testant sur plusieurs sous-ensembles des données.</p>
+
+      <p data-cat="ml"><strong>Random Forest :</strong> Algorithme basé sur la création de multiples arbres de décision pour améliorer la précision et réduire le risque de surapprentissage.</p>
+
+      <p data-cat="ml"><strong>Réseaux de neurones convolutifs (CNN) :</strong> Type de réseau de neurones spécialisé dans le traitement des données structurées en grille, comme les images.</p>
+
+      <p data-cat="ml"><strong>Réseaux de neurones récurrents (RNN) :</strong> Type de réseau de neurones adapté aux séquences de données, où les informations des étapes précédentes influencent les prédictions actuelles.</p>
+
+      <p data-cat="ml"><strong>Courbe ROC (Receiver Operating Characteristic) :</strong> Courbe utilisée pour évaluer les performances d'un modèle de classification en traçant le taux de vrais positifs contre le taux de faux positifs.</p>
+
+      <p data-cat="ml"><strong>AUC (Area Under the Curve) :</strong> Surface sous la courbe ROC, utilisée comme une mesure de performance globale d’un modèle de classification.</p>
+    <p data-cat="ml"><strong>Batch Normalization :</strong> Technique utilisée dans les réseaux de neurones pour normaliser les activations d'une couche, accélérant l'entraînement et améliorant la stabilité.</p>
+
+<p data-cat="ml"><strong>Dropout :</strong> Méthode de régularisation pour les réseaux de neurones consistant à désactiver aléatoirement certains neurones pendant l'entraînement afin de réduire le surapprentissage.</p>
+
+<p data-cat="ml"><strong>Ensemble Learning :</strong> Technique combinant plusieurs modèles pour améliorer la performance globale, comme le bagging, boosting ou stacking.</p>
+
+<p data-cat="ml"><strong>XGBoost :</strong> Implémentation optimisée de gradient boosting très performante pour les tâches de classification et de régression.</p>
+
+<p data-cat="ml"><strong>LightGBM :</strong> Bibliothèque de gradient boosting optimisée pour les gros ensembles de données, développée par Microsoft.</p>
+
+<p data-cat="proba"><strong>Odds Ratio :</strong> Mesure statistique exprimant le rapport des chances d'un événement entre deux groupes.</p>
+
+<p data-cat="stats"><strong>Coefficient de corrélation de Pearson :</strong> Mesure linéaire de la relation entre deux variables quantitatives, variant entre -1 et +1.</p>
+
+<p data-cat="stats"><strong>Coefficient de corrélation de Spearman :</strong> Mesure non paramétrique de corrélation basée sur les rangs des données.</p>
+
+<p data-cat="proba"><strong>Intervalle de crédibilité :</strong> Intervalle estimé dans lequel un paramètre a une probabilité donnée de se trouver, utilisé en statistique bayésienne.</p>
+
+<p data-cat="proba"><strong>Bayes' Theorem :</strong> Formule permettant de calculer la probabilité conditionnelle d’un événement à partir d’informations préalables.</p>
+
+<p data-cat="ml"><strong>Feature Engineering :</strong> Processus de création, transformation et sélection des variables (features) pour améliorer la performance d’un modèle.</p>
+
+<p data-cat="ml"><strong>One-Hot Encoding :</strong> Technique de transformation des variables catégorielles en variables binaires utilisables par les algorithmes de machine learning.</p>
+
+<p data-cat="ml"><strong>Word Embeddings :</strong> Représentations vectorielles des mots, comme Word2Vec ou GloVe, capturant les relations sémantiques entre mots.</p>
+
+<p data-cat="stats"><strong>Test t de Student :</strong> Test statistique utilisé pour comparer la moyenne de deux groupes et déterminer si la différence est significative.</p>
+
+<p data-cat="stats"><strong>ANOVA (Analyse de la variance) :</strong> Test statistique permettant de comparer les moyennes de plusieurs groupes.</p>
+
+<p data-cat="regression"><strong>Régression logistique :</strong> Modèle statistique utilisé pour prédire une variable binaire à partir de variables explicatives.</p>
+
+<p data-cat="regression"><strong>Elastic Net :</strong> Technique de régression combinant les régularisations L1 (Lasso) et L2 (Ridge).</p>
+
+<p data-cat="stats"><strong>Valeur aberrante (Outlier) :</strong> Observation qui s'écarte fortement des autres valeurs d'un jeu de données.</p>
+
+<p data-cat="ml"><strong>SMOTE (Synthetic Minority Over-sampling Technique) :</strong> Méthode de rééchantillonnage synthétique pour équilibrer des classes déséquilibrées.</p>
+
+<p data-cat="stats"><strong>Kurtosis (Aplatissement) :</strong> Mesure décrivant la forme de la distribution, en particulier la concentration des valeurs dans les queues.</p>
+
+<p data-cat="stats"><strong>Skewness (Asymétrie) :</strong> Mesure indiquant si une distribution est symétrique ou penche vers la gauche/droite.</p>
+
+<p data-cat="proba"><strong>Markov Chain :</strong> Modèle stochastique décrivant une séquence d’événements où la probabilité de chaque événement ne dépend que de l’état précédent.</p>
+<p data-cat="ml"><strong>Gradient Boosting :</strong> Méthode d’ensemble qui construit des modèles de manière séquentielle, chaque nouveau modèle corrigeant les erreurs des précédents.</p>
+
+<p data-cat="ml"><strong>CatBoost :</strong> Bibliothèque de gradient boosting optimisée pour les variables catégorielles, développée par Yandex.</p>
+
+<p data-cat="ml"><strong>Bagging :</strong> Technique d’ensemble qui entraîne plusieurs modèles indépendamment sur des échantillons bootstrapés, puis agrège leurs prédictions.</p>
+
+<p data-cat="ml"><strong>AdaBoost :</strong> Méthode de boosting adaptatif qui pondère les erreurs pour se concentrer sur les exemples difficiles à classer.</p>
+
+<p data-cat="ml"><strong>Hyperparameter Tuning :</strong> Processus d’optimisation des paramètres d’un modèle pour améliorer ses performances (grid search, random search, bayesian optimization).</p>
+
+<p data-cat="ml"><strong>Early Stopping :</strong> Technique d'arrêt anticipé de l'entraînement d’un modèle lorsque la performance sur un jeu de validation cesse de s'améliorer.</p>
+
+<p data-cat="proba"><strong>Distribution exponentielle :</strong> Distribution de probabilité continue utilisée pour modéliser le temps entre des événements dans un processus de Poisson.</p>
+
+<p data-cat="proba"><strong>Distribution Gamma :</strong> Distribution continue flexible utilisée en modélisation statistique et en théorie des files d'attente.</p>
+
+<p data-cat="proba"><strong>Distribution Beta :</strong> Distribution continue définie sur [0,1], souvent utilisée pour modéliser des proportions et des probabilités.</p>
+
+<p data-cat="proba"><strong>Processus de Poisson :</strong> Modèle stochastique décrivant le nombre d’événements se produisant dans un intervalle de temps fixe.</p>
+
+<p data-cat="stats"><strong>Colinéarité :</strong> Situation où deux ou plusieurs variables explicatives sont fortement corrélées, rendant l’estimation des coefficients instable.</p>
+
+<p data-cat="stats"><strong>Multicolinéarité :</strong> Forme extrême de colinéarité impliquant plusieurs variables, pouvant affecter la robustesse des modèles linéaires.</p>
+
+<p data-cat="stats"><strong>Analyse discriminante linéaire (LDA) :</strong> Méthode de classification qui projette les données sur un espace de dimension réduite maximisant la séparation entre classes.</p>
+
+<p data-cat="regression"><strong>Régression polynomiale :</strong> Extension de la régression linéaire qui modélise des relations non linéaires en introduisant des puissances des variables explicatives.</p>
+
+<p data-cat="regression"><strong>Régression PLS (Partial Least Squares) :</strong> Méthode adaptée aux données fortement corrélées et aux situations avec plus de variables que d’observations.</p>
+
+<p data-cat="algebra"><strong>Norme vectorielle :</strong> Mesure de la taille ou de la longueur d’un vecteur, comme les normes L1, L2 et L∞.</p>
+
+<p data-cat="algebra"><strong>Produit scalaire :</strong> Opération entre deux vecteurs donnant un nombre, représentant la projection d’un vecteur sur un autre.</p>
+
+<p data-cat="algebra"><strong>Produit matriciel :</strong> Opération qui combine deux matrices pour produire une troisième, utilisée dans de nombreuses transformations linéaires.</p>
+
+<p data-cat="algebra"><strong>Décomposition en valeurs singulières (SVD) :</strong> Factorisation d’une matrice en trois matrices, utilisée pour la réduction de dimension et la compression.</p>
+
+<p data-cat="ml"><strong>Apprentissage par transfert (Transfer Learning) :</strong> Réutilisation d’un modèle pré-entraîné sur un problème similaire pour accélérer l’apprentissage sur un nouveau problème.</p>
+
+<p data-cat="ml"><strong>Apprentissage semi-supervisé :</strong> Technique exploitant à la fois des données étiquetées et non étiquetées pour améliorer les performances d’un modèle.</p>
+
+<p data-cat="ml"><strong>Apprentissage auto-supervisé :</strong> Technique où un modèle génère ses propres labels à partir des données brutes pour pré-entraîner ses représentations.</p>
+
+<p data-cat="ml"><strong>GAN (Generative Adversarial Network) :</strong> Architecture de deep learning composée d’un générateur et d’un discriminateur, utilisée pour créer des données synthétiques réalistes.</p>
+
+<p data-cat="ml"><strong>Autoencoder :</strong> Réseau de neurones entraîné à reconstruire ses entrées après les avoir compressées, utilisé pour la réduction de dimension et la détection d’anomalies.</p>
+
+    </div>
+  </div>
+</section>
+ <!-- Palette de commandes (⌘K / Ctrl‑K) -->
+<div id="cmdk" class="cmdk" role="dialog" aria-modal="true" hidden>
+  <div class="cmdk-box">
+    <input id="cmdk-input" type="search" placeholder="Rechercher (sections & termes)…" aria-label="Palette de commandes" />
+    <ul id="cmdk-results" class="cmdk-results" role="listbox" aria-label="Résultats"></ul>
+    <div class="cmdk-hint">↑↓ pour naviguer • Entrée pour ouvrir • Tab pour auto‑compléter • Échap pour fermer</div>
+  </div>
+</div>
+
+<!-- Zone toasts -->
+<div id="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+
+    <section id="plan" class="reveal d2" hidden>
+      <div class="card"><h2 class="h1">Plan du bâtiment principal</h2><img src="Plan_salles.jpg" alt="Plan du bâtiment principal" style="width:100%; border-radius:14px; border:1px solid var(--card-border)"></div>
+    </section>
+
+    <footer class="reveal d3">© SINGH 2025 – 2026 • Université Paris Cité</footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
