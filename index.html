@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emploi du temps – Master MLSD & AMSD</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+</head>
+<body>
+   <canvas id="space" aria-hidden="true"></canvas>
+
+  <!-- HEADER -->
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><div class="logo" aria-hidden="true"></div><div>Master <span style="color:var(--brand)">MLSD</span> & <span style="color:var(--brand-2)">AMSD</span></div></div>
+      <nav class="links" aria-label="Navigation principale">
+        <a href="#planning" class="active" data-section="planning">Planning</a>
+        <a href="#calendar" data-section="calendar">Calendrier</a>
+        <a href="#presentation" data-section="presentation">Présentation du Master</a>
+        <a href="#terms" data-section="terms">Termes</a>
+        <a href="#simulations" data-section="simulations">Simulations</a>
+        <a href="#plan" data-section="plan">Plan</a>
+    </nav>
+
+      <div class="actions">
+        <a class="btn" href="https://intranet.u-paris.fr/" target="_blank" rel="noopener">Intranet</a>
+        <a class="btn" href="https://moodle.u-paris.fr/" target="_blank" rel="noopener">Moodle</a>
+        
+        <button class="btn" id="themeToggle" aria-label="Basculer le thème">🌓</button>
+      </div>
+    </div>
+  </header>
+  <!-- === Prochains cours : popover === -->
+  <div id="next-popover" class="popover" hidden>
+    <div class="popover-inner">
+      <div class="popover-title">À venir</div>
+      <ul id="next-list" class="popover-list"></ul>
+    </div>
+  </div>
+  <!-- MAIN -->
+  <main class="wrap">
+    <!-- PLANNING -->
+    <section id="planning" class="reveal">
+      <div class="card">
+        <div class="pill"><span class="dot"></span> Prochain cours <span id="nextTitle" style="margin-left:6px; font-weight:800"></span></div>
+        <h1 class="h1">Emploi du temps – Semaine en cours</h1>
+
+
+        <div class="widget">
+          <div class="row">
+            <div class="seg">
+              <div class="view-toggle" role="tablist" aria-label="Type de vue">
+                <button class="chip active" data-mode="WEEK" role="tab" aria-selected="true">Semaine</button>
+                <button class="chip" data-mode="AGENDA" role="tab" aria-selected="false">Agenda</button>
+                <button class="chip" data-mode="MONTH" role="tab" aria-selected="false">Mois</button>
+              </div>
+            </div>
+            <div class="seg" style="text-align:right">
+              <button class="btn" id="prevWeek" title="Semaine précédente">◀</button>
+              <button class="btn" id="today" title="Aujourd'hui">Aujourd'hui</button>
+              <button class="btn" id="nextWeek" title="Semaine suivante">▶</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="seg kbd">Timezone : Europe/Paris</div>
+            <div class="seg" style="text-align:right"><span class="kbd">Début du prochain cours dans</span> <span class="countdown" id="countdown">—</span></div>
+          </div>
+          <div class="calendar-shell reveal d2">
+            <iframe id="gcal" class="cal" title="Google Calendar embedded"></iframe>
+          </div>
+          <p class="sub">Si le calendrier ne s'affiche pas correctement, <a href="https://docs.google.com/spreadsheets/d/1IhyeM39QryPrYvrWcEFiChPrkVHD4Sw3/edit?gid=51203610#gid=51203610" target="_blank" rel="noopener">consulte la version de secours</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendar" class="reveal d2" hidden>
+      <div class="card">
+        <h2 class="h1">Calendrier de formation 2025–2026</h2>
+        <img src="calendrier2025.png" alt="Calendrier MLSD FI & FA " style="width:100%; border-radius:14px; border:1px solid var(--card-border)"/>
+        <p class="sub">Valable pour MLSD FI & FA (2025–2026).</p>
+      </div>
+    </section>
+
+    <section id="presentation" class="reveal d2" hidden>
+        <div class="card">
+            <h2 class="h1">Présentation du Master</h2>
+            <p class="sub">Document officiel 2024–2025.</p>
+
+        <iframe
+            src="M1_Presentation_Master_MLSD-AMSD-24-25-3.pdf"
+            width="100%"
+            height="600"
+            style="border-radius:14px; border:1px solid var(--card-border)"
+        ></iframe>
+
+            <p style="margin-top:12px">
+                <a class="btn" href="M1_Presentation_Master_MLSD-AMSD-24-25-3.pdf" target="_blank" rel="noopener">
+                📄 Télécharger le PDF
+                </a>
+            </p>
+        </div>
+    </section>
+
+    <section id="terms" class="reveal d2" hidden>
+  <div class="card">
+    <h2 class="h1">Termes statistiques essentiels</h2>
+    <div class="terms-filters">
+  <button data-cat="all" class="active">🌐 Tout</button>
+  <button data-cat="stats">📊 Statistiques de base</button>
+  <button data-cat="proba">🎯 Probabilités</button>
+  <button data-cat="regression">📈 Régression</button>
+  <button data-cat="ml">🤖 Machine Learning</button>
+  <button data-cat="algebra">🔢 Algèbre linéaire</button>
+  <button data-cat="timeseries">🕒 Séries temporelles</button>
+  <button data-cat="abtest">🧪 A/B testing</button>
+
+</div>
+
+    <div class="terms-search">
+  <input id="termsSearch" type="search"
+         placeholder="Rechercher un terme (ex : variance, Poisson, ROC)…"
+         autocomplete="off" />
+  <span class="kbd" id="termsCount"></span>
+</div>
+    <div class="terms-content">
+      <p data-cat="stats"><strong>Variance :</strong> Mesure de la dispersion des données autour de la moyenne. Plus la variance est grande, plus les données sont dispersées.</p>
+      <p data-cat="algebra"><strong>Valeurs propres (Eigenvalues) :</strong> Les scalaires associés aux vecteurs propres d'une matrice, décrivant dans quelle mesure ces vecteurs sont étirés ou compressés par la transformation linéaire.</p>
+      <p data-cat="stats"><strong>Biais (Bias) :</strong> Différence entre la valeur attendue d'un estimateur et la vraie valeur d'un paramètre. Un modèle biaisé peut manquer de précision.</p>
+      <p data-cat="stats"><strong>Écart-type (Standard Deviation) :</strong> Racine carrée de la variance. Il exprime la dispersion des données par rapport à la moyenne dans la même unité que les données.</p>
+      <p data-cat="stats"><strong>Quartiles :</strong> Valeurs qui divisent un ensemble de données en quatre parties égales. Le premier quartile (Q1), la médiane (Q2), et le troisième quartile (Q3).</p>
+      <p data-cat="proba"><strong>Loi de Bernoulli :</strong> Loi de probabilité qui décrit une expérience aléatoire ayant deux issues possibles (succès (p) ou échec (1-p)), avec une probabilité fixe de succès.</p>
+      <p data-cat="proba"><strong>Loi normale (Gaussian Distribution) :</strong> Loi de probabilité continue symétrique en forme de cloche, définie par une moyenne μ et un écart-type σ, très utilisée pour modéliser des phénomènes naturels et de nombreuses approximations statistiques.</p>
+      <p data-cat="proba"><strong>Loi de Poisson :</strong> Distribution de probabilité discrète qui modélise le nombre d'événements se produisant dans un intervalle de temps ou d'espace fixe, lorsque ces événements surviennent indépendamment et à un taux constant.</p>
+      <p data-cat="stats"><strong>Espérance mathématique (Expected Value) :</strong> Moyenne pondérée des résultats d'une variable aléatoire. C'est la valeur centrale attendue d'une expérience aléatoire.</p>
+      <p data-cat="proba"><strong>P-value :</strong> Probabilité, sous l’hypothèse nulle, d’observer une statistique de test au moins aussi extrême que celle mesurée. Utilisée pour évaluer la significativité statistique d’un résultat.</p>
+      <p data-cat="stats"><strong>Intervalle de confiance (Confidence Interval) :</strong> Plage de valeurs qui, avec une certaine probabilité, contient la vraie valeur d'un paramètre statistique.</p>
+      <p data-cat="regression"><strong>Régression linéaire :</strong> Technique statistique utilisée pour modéliser la relation entre une variable dépendante et une ou plusieurs variables indépendantes.</p>
+      <p data-cat="ml"><strong>Surapprentissage (Overfitting) :</strong> Situation où un modèle est trop ajusté aux données d'entraînement, ce qui nuit à sa généralisation sur des données nouvelles.</p>
+      <p data-cat="ml"><strong>Sous-apprentissage (Underfitting) :</strong> Modèle trop simple pour capturer les relations sous-jacentes dans les données, conduisant à une mauvaise performance.</p>
+      <p data-cat="ml,stats"><strong>Matrice de confusion :</strong> Tableau utilisé pour évaluer la performance d'un modèle de classification en comptant les vraies et fausses prédictions.</p>
+      <p data-cat="stats"><strong>Test d'hypothèse :</strong> Méthode statistique pour tester une affirmation sur un paramètre de population en utilisant les données d'un échantillon.</p>
+      <p data-cat="stats"><strong>Bootstrap :</strong> Technique de rééchantillonnage qui permet d'estimer les propriétés d'un estimateur en rééchantillonnant avec remplacement.</p>
+      <p data-cat="stats"><strong>AIC/BIC :</strong> Critères utilisés pour comparer différents modèles statistiques en combinant qualité d’ajustement et pénalisation de la complexité du modèle.</p>
+      <p data-cat="ml,stats"><strong>Analyse en composantes principales (ACP) :</strong> Méthode de réduction de dimensionnalité qui transforme des variables corrélées en nouvelles variables non corrélées tout en conservant l'essentiel de la variance.</p>
+      <p data-cat="algebra"><strong>Matrice :</strong> Un tableau de nombres disposés en lignes et en colonnes, utilisé pour organiser des ensembles de données et des transformations linéaires.</p>
+      <p data-cat="stats,algebra"><strong>Covariance :</strong> Mesure de la manière dont deux variables varient ensemble. Si la covariance est positive, les deux variables augmentent ensemble, si elle est négative, elles varient en sens inverse.</p>
+      <p data-cat="algebra"><strong>Matrice de covariance :</strong> Matrice carrée qui présente les covariances entre chaque paire de variables dans un ensemble de données.</p>
+      <p data-cat="algebra"><strong>Vecteur :</strong> Une liste ordonnée de nombres qui représente une quantité ayant une direction et une magnitude. Les vecteurs sont utilisés dans des espaces de haute dimension.</p>
+      <p data-cat="algebra"><strong>Autovalues (Valeurs propres) :</strong> Les scalaires associés aux vecteurs propres d'une matrice. Utilisées pour comprendre des caractéristiques fondamentales des transformations linéaires.</p>
+      <p data-cat="algebra"><strong>Autovecteurs (Vecteurs propres) :</strong> Les vecteurs associés aux valeurs propres qui ne changent pas de direction lors de la transformation par une matrice.</p>
+      <p data-cat="regression"><strong>Régularisation :</strong> Technique utilisée pour ajouter une pénalité aux modèles statistiques afin d’éviter le surapprentissage.</p>
+      <p data-cat="regression"><strong>Régression Ridge :</strong> Forme de régression linéaire qui inclut une régularisation L2 pour pénaliser les grands coefficients afin de réduire le surapprentissage.</p>
+      <p data-cat="regression"><strong>Régression Lasso :</strong> Forme de régression linéaire qui inclut une régularisation L1 pour favoriser la parcimonie en forçant certains coefficients à zéro.</p>
+      <p data-cat="ml"><strong>Gradient Descent :</strong> Algorithme d'optimisation utilisé pour minimiser la fonction de coût dans les modèles d’apprentissage machine.</p>
+      <p data-cat="proba"><strong>Chaîne de Markov :</strong> Modèle stochastique décrivant une suite d’états où la probabilité de passer à l’état suivant dépend uniquement de l’état actuel, pas de l’historique complet.</p>
+      <p data-cat="stats"><strong>Matrice de corrélation :</strong> Une matrice qui montre la corrélation entre chaque paire de variables. Utile pour repérer les relations linéaires entre les variables.</p>
+      <p data-cat="proba"><strong>Loi des grands nombres :</strong> Théorème indiquant que, pour des variables aléatoires indépendantes et identiquement distribuées (i.i.d.) avec une variance finie, à mesure que le nombre d'échantillons augmente, la moyenne d’un échantillon converge vers la moyenne théorique de la population.</p>
+      <p data-cat="stats"><strong>Maximum de vraisemblance (MLE) :</strong> Méthode d’estimation des paramètres d’un modèle statistique consistant à maximiser la fonction de vraisemblance. C’est l’une des approches les plus utilisées en statistique.</p>
+      <p data-cat="ml"><strong>Algorithme K-means :</strong> Algorithme de clustering non supervisé qui partitionne les données en k groupes en minimisant la distance intra-cluster.</p>
+      <p data-cat="ml"><strong>Réseaux bayésiens :</strong> Structures de données en forme de graphe qui représentent les relations probabilistes entre des variables.</p>
+      <p data-cat="ml"><strong>K-Nearest Neighbors (K-NN) :</strong> Algorithme utilisé pour la classification basé sur la similarité des points voisins dans l'espace des données.</p>
+      <p data-cat="algebra"><strong>Distance euclidienne :</strong> Mesure de la distance directe entre deux points dans un espace multi-dimensionnel. Utilisée dans les algorithmes de clustering.</p>
+      <p data-cat="stats"><strong>Normalisation et standardisation :</strong> Techniques de prétraitement des données qui ramènent les données dans un intervalle fixe ou une distribution normalisée.</p>
+      <p data-cat="stats"><strong>Test de Chi-carré :</strong> Test statistique utilisé pour déterminer si une relation existe entre deux variables catégorielles.</p>
+      <p data-cat="regression"><strong>Méthode des moindres carrés :</strong> Méthode utilisée pour ajuster un modèle de régression en minimisant la somme des carrés des différences entre les valeurs observées et prédites.</p>
+      <p data-cat="stats"><strong>Variance expliquée :</strong> Proportion de la variance totale d'un ensemble de données qui est expliquée par un modèle statistique.</p>
+      <p data-cat="stats"><strong>Effet de levier (Leverage) :</strong> Mesure de l'influence d'un point de données sur la régression.</p>
+      <p data-cat="stats"><strong>Information Entropy (Entropie) :</strong> Mesure de l'incertitude ou de la quantité d'information contenue dans une variable aléatoire.</p>
+      <p data-cat="stats"><strong>Mutual Information :</strong> Mesure de la dépendance entre deux variables, quantifiant combien connaître la valeur d'une variable réduit l'incertitude de l'autre.</p>
+      <p data-cat="ml,stats"><strong>Cross-validation :</strong> Technique utilisée pour évaluer la performance d’un modèle en le testant sur plusieurs sous-ensembles des données.</p>
+      <p data-cat="ml"><strong>Random Forest :</strong> Algorithme basé sur la création de multiples arbres de décision pour améliorer la précision et réduire le risque de surapprentissage.</p>
+      <p data-cat="ml"><strong>Réseaux de neurones convolutifs (CNN) :</strong> Type de réseau de neurones spécialisé dans le traitement des données structurées en grille, comme les images.</p>
+      <p data-cat="ml"><strong>Réseaux de neurones récurrents (RNN) :</strong> Type de réseau de neurones adapté aux séquences de données, où les informations des étapes précédentes influencent les prédictions actuelles.</p>
+      <p data-cat="ml"><strong>Courbe ROC (Receiver Operating Characteristic) :</strong> Courbe utilisée pour évaluer les performances d'un modèle de classification en traçant le taux de vrais positifs contre le taux de faux positifs.</p>
+      <p data-cat="ml"><strong>AUC (Area Under the Curve) :</strong> Surface sous la courbe ROC, utilisée comme une mesure de performance globale d’un modèle de classification.</p>
+    <p data-cat="ml"><strong>Batch Normalization :</strong> Technique utilisée dans les réseaux de neurones pour normaliser les activations d'une couche, accélérant l'entraînement et améliorant la stabilité.</p>
+<p data-cat="ml"><strong>Dropout :</strong> Méthode de régularisation pour les réseaux de neurones consistant à désactiver aléatoirement certains neurones pendant l'entraînement afin de réduire le surapprentissage.</p>
+<p data-cat="ml"><strong>Ensemble Learning :</strong> Technique combinant plusieurs modèles pour améliorer la performance globale, comme le bagging, boosting ou stacking.</p>
+<p data-cat="ml"><strong>XGBoost :</strong> Implémentation optimisée de gradient boosting très performante pour les tâches de classification et de régression.</p>
+<p data-cat="ml"><strong>LightGBM :</strong> Bibliothèque de gradient boosting optimisée pour les gros ensembles de données, développée par Microsoft.</p>
+<p data-cat="proba"><strong>Rapport de cotes (Odds Ratio) :</strong> Mesure du rapport des chances d’un événement entre deux groupes, couramment utilisée en épidémiologie et dans les études de cas-témoins.</p>
+<p data-cat="stats"><strong>Coefficient de corrélation de Pearson :</strong> Mesure linéaire de la relation entre deux variables quantitatives, variant entre -1 et +1.</p>
+<p data-cat="stats"><strong>Coefficient de corrélation de Spearman :</strong> Mesure non paramétrique de corrélation basée sur les rangs des données.</p>
+<p data-cat="proba"><strong>Intervalle de crédibilité :</strong> Intervalle estimé dans lequel un paramètre a une probabilité donnée de se trouver, utilisé en statistique bayésienne.</p>
+<p data-cat="proba"><strong>Bayes' Theorem :</strong> Formule permettant de calculer la probabilité conditionnelle d’un événement à partir d’informations préalables.</p>
+<p data-cat="ml"><strong>Feature Engineering :</strong> Processus de création, transformation et sélection des variables (features) pour améliorer la performance d’un modèle.</p>
+<p data-cat="ml"><strong>One-Hot Encoding :</strong> Technique de transformation des variables catégorielles en variables binaires utilisables par les algorithmes de machine learning.</p>
+<p data-cat="ml"><strong>Word Embeddings :</strong> Représentations vectorielles des mots, comme Word2Vec ou GloVe, capturant les relations sémantiques entre mots.</p>
+<p data-cat="stats"><strong>Test t de Student :</strong> Test statistique utilisé pour comparer la moyenne de deux groupes et déterminer si la différence est significative.</p>
+<p data-cat="stats"><strong>ANOVA (Analyse de la variance) :</strong> Test statistique permettant de comparer les moyennes de plusieurs groupes.</p>
+<p data-cat="regression"><strong>Régression logistique :</strong> Modèle statistique utilisé pour prédire une variable binaire à partir de variables explicatives.</p>
+<p data-cat="regression"><strong>Elastic Net :</strong> Technique de régression combinant les régularisations L1 (Lasso) et L2 (Ridge).</p>
+<p data-cat="stats"><strong>Valeur aberrante (Outlier) :</strong> Observation qui s'écarte fortement des autres valeurs d'un jeu de données.</p>
+<p data-cat="ml"><strong>SMOTE (Synthetic Minority Over-sampling Technique) :</strong> Méthode de rééchantillonnage synthétique pour équilibrer des classes déséquilibrées.</p>
+<p data-cat="stats"><strong>Kurtosis (Aplatissement) :</strong> Mesure décrivant la forme de la distribution, en particulier la concentration des valeurs dans les queues.</p>
+<p data-cat="stats"><strong>Skewness (Asymétrie) :</strong> Mesure indiquant si une distribution est symétrique ou penche vers la gauche/droite.</p>
+<p data-cat="proba"><strong>Markov Chain :</strong> Modèle stochastique décrivant une séquence d’événements où la probabilité de chaque événement ne dépend que de l’état précédent.</p>
+<p data-cat="ml"><strong>Gradient Boosting :</strong> Méthode d’ensemble qui construit des modèles de manière séquentielle, chaque nouveau modèle corrigeant les erreurs des précédents.</p>
+<p data-cat="ml"><strong>CatBoost :</strong> Bibliothèque de gradient boosting optimisée pour les variables catégorielles, développée par Yandex.</p>
+<p data-cat="ml"><strong>Bagging :</strong> Technique d’ensemble qui entraîne plusieurs modèles indépendamment sur des échantillons bootstrapés, puis agrège leurs prédictions.</p>
+<p data-cat="ml"><strong>AdaBoost :</strong> Méthode de boosting adaptatif qui pondère les erreurs pour se concentrer sur les exemples difficiles à classer.</p>
+<p data-cat="ml"><strong>Hyperparameter Tuning :</strong> Processus d’optimisation des paramètres d’un modèle pour améliorer ses performances (grid search, random search, bayesian optimization).</p>
+<p data-cat="ml"><strong>Early Stopping :</strong> Technique d'arrêt anticipé de l'entraînement d’un modèle lorsque la performance sur un jeu de validation cesse de s'améliorer.</p>
+<p data-cat="proba"><strong>Processus de Poisson :</strong> Modèle stochastique de comptage décrivant le nombre d’événements se produisant dans un intervalle de temps fixe, avec des incréments indépendants et un taux constant.</p>
+<p data-cat="stats"><strong>Colinéarité :</strong> Situation où deux ou plusieurs variables explicatives sont fortement corrélées, rendant l’estimation des coefficients instable.</p>
+<p data-cat="stats"><strong>Multicolinéarité :</strong> Forme extrême de colinéarité impliquant plusieurs variables, pouvant affecter la robustesse des modèles linéaires.</p>
+<p data-cat="proba"><strong>Théorème central limite (Central Limit Theorem) :</strong> Théorème stipulant que, pour un grand nombre de variables aléatoires indépendantes et identiquement distribuées (i.i.d.) ayant une variance finie, la distribution de leur somme ou de leur moyenne tend vers une loi normale, quelle que soit la distribution d’origine.</p>
+<p data-cat="stats"><strong>Analyse discriminante linéaire (LDA) :</strong> Méthode de classification qui projette les données sur un espace de dimension réduite maximisant la séparation entre classes.</p>
+<p data-cat="regression"><strong>Régression polynomiale :</strong> Extension de la régression linéaire qui modélise des relations non linéaires en introduisant des puissances des variables explicatives.</p>
+<p data-cat="regression"><strong>Régression PLS (Partial Least Squares) :</strong> Méthode adaptée aux données fortement corrélées et aux situations avec plus de variables que d’observations.</p>
+<p data-cat="algebra"><strong>Norme vectorielle :</strong> Mesure de la taille ou de la longueur d’un vecteur, comme les normes L1, L2 et L∞.</p>
+<p data-cat="algebra"><strong>Produit scalaire :</strong> Opération entre deux vecteurs donnant un nombre, représentant la projection d’un vecteur sur un autre.</p>
+<p data-cat="algebra"><strong>Produit matriciel :</strong> Opération qui combine deux matrices pour produire une troisième, utilisée dans de nombreuses transformations linéaires.</p>
+<p data-cat="algebra"><strong>Décomposition en valeurs singulières (SVD) :</strong> Factorisation d’une matrice en trois matrices, utilisée pour la réduction de dimension et la compression.</p>
+<p data-cat="ml"><strong>Apprentissage par transfert (Transfer Learning) :</strong> Réutilisation d’un modèle pré-entraîné sur un problème similaire pour accélérer l’apprentissage sur un nouveau problème.</p>
+<p data-cat="ml"><strong>Apprentissage semi-supervisé :</strong> Technique exploitant à la fois des données étiquetées et non étiquetées pour améliorer les performances d’un modèle.</p>
+<p data-cat="ml"><strong>Apprentissage auto-supervisé :</strong> Technique où un modèle génère ses propres labels à partir des données brutes pour pré-entraîner ses représentations.</p>
+<p data-cat="ml"><strong>GAN (Generative Adversarial Network) :</strong> Architecture de deep learning composée d’un générateur et d’un discriminateur, utilisée pour créer des données synthétiques réalistes.</p>
+<p data-cat="ml"><strong>Autoencoder :</strong> Réseau de neurones entraîné à reconstruire ses entrées après les avoir compressées, utilisé pour la réduction de dimension et la détection d’anomalies.</p>
+<p data-cat="proba"><strong>Fonction de densité de probabilité (PDF) :</strong> Fonction qui décrit la répartition d’une variable aléatoire continue. La probabilité que la variable prenne une valeur dans un intervalle donné correspond à l’intégrale de cette densité sur cet intervalle.</p>
+<p data-cat="proba"><strong>Fonction de masse de probabilité (PMF) :</strong> Fonction qui associe à chaque valeur possible d’une variable aléatoire discrète la probabilité que cette valeur se réalise.</p><p data-cat="proba"><strong>Loi uniforme :</strong> Loi de probabilité continue où toutes les valeurs d’un intervalle ont la même probabilité.</p>
+<p data-cat="proba"><strong>Loi log-normale :</strong> Loi de probabilité continue pour une variable dont le logarithme suit une loi normale ; utilisée pour modéliser des phénomènes multiplicatifs.</p>
+<p data-cat="proba"><strong>Loi du chi-deux (χ²) :</strong> Loi de probabilité continue, définie uniquement pour des valeurs positives, utilisée dans les tests du chi-deux et l’estimation de variance, paramétrée par ses degrés de liberté.</p>
+<p data-cat="proba"><strong>Loi de Student (t) :</strong> Loi de probabilité continue utilisée pour estimer ou tester une moyenne lorsque la taille d’échantillon est petite et que la variance de la population est inconnue.</p>
+<p data-cat="proba"><strong>Loi de Fisher-Snedecor (F) :</strong> Loi de probabilité continue utilisée pour comparer des variances dans les tests d'analyse de variance (ANOVA).</p>
+<p data-cat="proba"><strong>Loi bêta :</strong> Loi de probabilité continue définie sur [0, 1], paramétrée par deux coefficients positifs, utilisée pour modéliser des proportions.</p>
+<p data-cat="proba"><strong>Loi gamma :</strong> Loi de probabilité continue utilisée pour modéliser des temps d’attente ou des durées, paramétrée par un coefficient de forme et un coefficient de taux (ou d’échelle).</p>
+<p data-cat="proba"><strong>Loi binomiale :</strong> Loi de probabilité discrète qui donne la probabilité d'obtenir un nombre donné de succès dans un nombre fixe d'essais indépendants.</p>
+<p data-cat="proba"><strong>Loi géométrique :</strong> Loi de probabilité discrète qui donne la probabilité que le premier succès survienne au kᵉ essai, pour des essais indépendants avec probabilité de succès constante.</p>
+<p data-cat="proba"><strong>Loi hypergéométrique :</strong> Loi de probabilité discrète qui modélise le nombre de succès dans un échantillon tiré sans remise d'une population finie.</p>
+<p data-cat="proba"><strong>Loi binomiale négative :</strong> Loi de probabilité discrète qui modélise le nombre d’échecs avant d’obtenir un nombre fixé de succès, pour des essais indépendants avec probabilité de succès constante.</p>
+<p data-cat="proba"><strong>Loi exponentielle :</strong> Loi de probabilité continue qui modélise le temps entre deux événements dans un processus à taux constant.</p>
+<p data-cat="stats"><strong>Médiane :</strong> Valeur qui sépare un ensemble de données ordonnées en deux parties de même taille. Robuste aux valeurs extrêmes, elle est souvent utilisée comme mesure centrale alternative à la moyenne.</p>
+<p data-cat="stats"><strong>Mode :</strong> Valeur ou catégorie la plus fréquente dans un ensemble de données. Utile pour les données qualitatives et quantitatives discrètes.</p>
+<p data-cat="stats"><strong>IQR (Intervalle inter-quartile) :</strong> Différence entre le troisième quartile (Q3) et le premier quartile (Q1). Mesure robuste de dispersion, insensible aux valeurs aberrantes.</p>
+<p data-cat="stats"><strong>MAD (Median Absolute Deviation) :</strong> Médiane des valeurs absolues des écarts à la médiane. Indicateur robuste de la dispersion des données.</p>
+<p data-cat="stats"><strong>Z-score :</strong> Valeur standardisée indiquant combien d’écarts-types une observation se situe par rapport à la moyenne, permettant de comparer des valeurs issues de distributions différentes.</p>
+<p data-cat="stats"><strong>Taille d’effet (Cohen’s d) :</strong> Mesure normalisée de la différence entre deux moyennes, exprimée en nombre d’écarts-types. Permet d’évaluer l’importance pratique d’un effet au-delà de la significativité statistique.</p>
+<p data-cat="stats"><strong>Taille d’effet (r) :</strong> Mesure basée sur un coefficient de corrélation ou extraite de statistiques de test, exprimant la force de l’association entre deux variables.</p>
+<p data-cat="stats"><strong>Puissance statistique :</strong> Probabilité qu’un test détecte un effet réel (1 − β). Dépend de la taille de l’effet, de l’échantillon et du seuil α choisi.</p>
+<p data-cat="stats"><strong>Erreur de type I (α) :</strong> Rejeter l’hypothèse nulle alors qu’elle est vraie. Correspond au risque de faux positif, fixé par le seuil de significativité.</p>
+<p data-cat="stats"><strong>Erreur de type II (β) :</strong> Ne pas rejeter l’hypothèse nulle alors qu’elle est fausse. Correspond au risque de faux négatif.</p>
+<p data-cat="stats"><strong>Tests multiples :</strong> Ensemble de procédures pour ajuster le seuil de significativité lorsque plusieurs tests sont effectués, afin de limiter l’inflation des faux positifs (ex. Bonferroni, Benjamini–Hochberg).</p>
+<p data-cat="stats"><strong>Hétéroscédasticité :</strong> Situation où la variance des résidus n’est pas constante à travers les valeurs des prédicteurs. Pose problème pour les modèles linéaires classiques.</p>
+<p data-cat="stats"><strong>Boîte à moustaches :</strong> Représentation graphique résumant la médiane, l’IQR et les valeurs extrêmes. Utilisée pour visualiser la dispersion et détecter les valeurs aberrantes.</p>
+<p data-cat="stats"><strong>QQ-plot :</strong> Graphique comparant les quantiles d’un échantillon avec ceux d’une distribution théorique, souvent utilisé pour vérifier l’hypothèse de normalité.</p>
+<p data-cat="proba"><strong>Probabilité conditionnelle :</strong> Probabilité qu’un événement A se produise sachant qu’un événement B est réalisé. Notée P(A|B) et définie par P(A∩B)/P(B).</p>
+<p data-cat="proba"><strong>Indépendance :</strong> Deux événements A et B sont indépendants si la réalisation de l’un n’influence pas la probabilité de l’autre, soit P(A∩B)=P(A)P(B).</p>
+<p data-cat="proba"><strong>Loi multinomiale :</strong> Extension de la loi binomiale à k issues possibles par essai. Modélise la probabilité d’obtenir des effectifs spécifiques sur n essais indépendants.</p>
+<p data-cat="proba"><strong>CDF (Fonction de répartition) :</strong> Fonction donnant, pour toute valeur x, la probabilité que la variable aléatoire soit inférieure ou égale à x. Notée F(x)=P(X≤x).</p>
+<p data-cat="proba"><strong>Quantiles / Percentiles :</strong> Valeurs seuils qui divisent une distribution en intervalles contenant des proportions spécifiques des observations.</p>
+<p data-cat="proba"><strong>Fonction génératrice des moments (MGF) :</strong> Fonction M(t)=E[e^{tX}] qui, si elle existe, permet d’obtenir tous les moments d’une variable aléatoire en dérivant M(t) en t=0.</p>
+<p data-cat="proba"><strong>Fonction caractéristique :</strong> Fonction φ(t)=E[e^{itX}] toujours définie, utilisée notamment pour étudier les sommes de variables aléatoires et la convergence en loi.</p>
+<p data-cat="proba"><strong>Inégalité de Markov :</strong> Pour une variable aléatoire positive X, P(X≥a) ≤ E[X]/a. Fournit une borne de probabilité sans hypothèse forte sur la distribution.</p>
+<p data-cat="proba"><strong>Inégalité de Tchebychev :</strong> Pour toute variable X de moyenne μ et variance σ², P(|X−μ|≥kσ) ≤ 1/k². Encadre la dispersion autour de la moyenne.</p>
+<p data-cat="proba"><strong>Inégalité de Jensen :</strong> Pour une fonction convexe f, f(E[X]) ≤ E[f(X)]. Utilisée en optimisation et théorie des probabilités.</p>
+<p data-cat="proba"><strong>Variables continues :</strong> Variables pouvant prendre une infinité de valeurs réelles dans un intervalle, modélisées par une PDF.</p>
+<p data-cat="proba"><strong>Variables discrètes :</strong> Variables ne pouvant prendre qu’un ensemble dénombrable de valeurs, modélisées par une PMF.</p>
+<p data-cat="regression"><strong>Hypothèses OLS :</strong> Ensemble de conditions nécessaires pour que les estimateurs de la régression linéaire soient optimaux : relation linéaire entre variables, indépendance des résidus, normalité des résidus, variance constante (homoscédasticité) et absence de multicolinéarité sévère.</p>
+<p data-cat="regression"><strong>R² :</strong> Coefficient de détermination mesurant la proportion de variance de la variable dépendante expliquée par le modèle. Une valeur proche de 1 indique un ajustement élevé.</p>
+<p data-cat="regression"><strong>R² ajusté :</strong> Version du R² qui pénalise les modèles avec de nombreuses variables non pertinentes, permettant de comparer des modèles avec un nombre de prédicteurs différent.</p>
+<p data-cat="regression"><strong>Diagnostics des résidus :</strong> Analyse graphique ou statistique des résidus pour vérifier les hypothèses de la régression (normalité, homoscédasticité, indépendance) et détecter d’éventuelles anomalies.</p>
+<p data-cat="regression"><strong>Durbin–Watson :</strong> Statistique utilisée pour détecter l’autocorrélation des résidus dans les modèles de régression appliqués à des données ordonnées dans le temps.</p>
+<p data-cat="regression"><strong>VIF (Variance Inflation Factor) :</strong> Indicateur mesurant le degré de multicolinéarité d’une variable explicative avec les autres. Un VIF élevé indique une corrélation forte avec d’autres variables du modèle.</p>
+<p data-cat="regression"><strong>GLM (Generalized Linear Model) :</strong> Famille de modèles statistiques généralisant la régression linéaire en permettant une distribution de réponse autre que normale et en utilisant une fonction de lien adaptée (logit, log, identité, etc.).</p>
+<p data-cat="regression"><strong>Fonctions de perte :</strong> Fonctions mesurant l’écart entre les valeurs prédites et observées, comme MSE (erreur quadratique moyenne), MAE (erreur absolue moyenne) ou Log-loss (perte logarithmique pour les probabilités).</p>
+<p data-cat="regression"><strong>Splines :</strong> Fonctions polynomiales par morceaux utilisées pour modéliser des relations non linéaires tout en assurant la continuité et la douceur aux points de jonction.</p>
+<p data-cat="regression"><strong>Termes d’interaction :</strong> Variables créées en multipliant deux prédicteurs afin de capturer l’effet combiné de ces variables sur la variable cible.</p>
+<p data-cat="ml"><strong>Split train/val/test :</strong> Division d’un jeu de données en trois ensembles : entraînement (train) pour ajuster le modèle, validation (val) pour optimiser les hyperparamètres, et test pour évaluer la performance finale sur des données inédites.</p>
+<p data-cat="ml"><strong>Validation croisée k-fold :</strong> Technique d’évaluation consistant à diviser les données en k sous-ensembles, à entraîner le modèle sur k-1 d’entre eux et à le tester sur le sous-ensemble restant, en répétant l’opération k fois pour obtenir une performance moyenne.</p>
+<p data-cat="ml"><strong>Précision (accuracy) :</strong> Proportion de prédictions correctes sur l’ensemble des prédictions effectuées par un modèle. Pertinente lorsque les classes sont équilibrées.</p>
+<p data-cat="ml"><strong>Rappel (recall) :</strong> Proportion de vrais positifs détectés parmi tous les positifs réels. Indique la capacité du modèle à identifier les exemples pertinents.</p>
+<p data-cat="ml"><strong>Spécificité :</strong> Proportion de vrais négatifs correctement identifiés parmi tous les négatifs réels. Utile pour évaluer la capacité à éviter les faux positifs.</p>
+<p data-cat="ml"><strong>F1 :</strong> Moyenne harmonique de la précision et du rappel. Favorise un équilibre entre les deux mesures, notamment en cas de classes déséquilibrées.</p>
+<p data-cat="ml"><strong>Matrice de coûts :</strong> Tableau attribuant un coût spécifique à chaque type d’erreur ou de bonne classification, permettant d’adapter la décision du modèle aux enjeux métier.</p>
+<p data-cat="ml"><strong>Courbe PR & AUPRC :</strong> Courbe représentant la précision en fonction du rappel pour différents seuils, et AUPRC étant l’aire sous cette courbe. Utile pour les jeux de données très déséquilibrés.</p>
+<p data-cat="ml"><strong>Calibration des probabilités :</strong> Processus visant à ajuster les probabilités prédites par un modèle afin qu’elles reflètent correctement les fréquences observées dans les données réelles.</p>
+<p data-cat="ml"><strong>Seuil de décision :</strong> Valeur limite appliquée aux probabilités prédites pour déterminer la classe attribuée par le modèle. Peut être ajusté pour équilibrer précision et rappel.</p>
+<p data-cat="ml"><strong>SVM (Support Vector Machine) :</strong> Algorithme de classification qui cherche à maximiser la marge entre les classes, avec possibilité d’utiliser des noyaux pour traiter des séparations non linéaires.</p>
+<p data-cat="ml"><strong>Naïve Bayes :</strong> Classifieur probabiliste basé sur le théorème de Bayes, supposant l’indépendance conditionnelle entre les variables explicatives.</p>
+<p data-cat="ml"><strong>Arbre de décision :</strong> Modèle prédictif structuré en nœuds de décision et feuilles de prédiction, permettant une interprétation simple des règles d’attribution des classes.</p>
+<p data-cat="ml"><strong>Clustering hiérarchique :</strong> Méthode de regroupement des données consistant à fusionner ou diviser les clusters de manière itérative pour former une hiérarchie représentée par un dendrogramme.</p>
+<p data-cat="ml"><strong>DBSCAN :</strong> Algorithme de clustering basé sur la densité, capable de détecter des groupes de formes quelconques et de gérer les points bruités.</p>
+<p data-cat="ml"><strong>Indice de silhouette :</strong> Mesure de la qualité d’un clustering, comparant la cohésion interne d’un cluster à sa séparation avec les autres clusters.</p>
+<p data-cat="ml"><strong>t-SNE :</strong> Technique de réduction de dimensionnalité non linéaire, optimisée pour la visualisation en 2D ou 3D des structures locales des données.</p>
+<p data-cat="ml"><strong>UMAP :</strong> Méthode de réduction de dimensionnalité rapide, conservant à la fois la structure locale et globale des données.</p>
+<p data-cat="ml"><strong>SHAP :</strong> Méthode d’explicabilité attribuant à chaque variable une contribution à la prédiction, basée sur les valeurs de Shapley issues de la théorie des jeux.</p>
+<p data-cat="ml"><strong>LIME :</strong> Technique d’explication locale approximant un modèle complexe par un modèle linéaire interprétable dans la zone d’un exemple particulier.</p>
+<p data-cat="ml"><strong>Pipelines :</strong> Chaînes ordonnées d’étapes de prétraitement et de modélisation permettant d’automatiser et de sécuriser l’entraînement d’un modèle.</p>
+<p data-cat="ml"><strong>Fuite de données (data leakage) :</strong> Introduction involontaire d’informations provenant des données de test dans l’entraînement, faussant les performances estimées du modèle.</p>
+<p data-cat="algebra"><strong>Rang :</strong> Nombre maximum de colonnes ou de lignes linéairement indépendantes dans une matrice. Indique la dimension de l’espace engendré par ses colonnes ou ses lignes.</p>
+<p data-cat="algebra"><strong>Déterminant :</strong> Scalaire calculé à partir d’une matrice carrée, indiquant le facteur d’échelle d’une transformation linéaire et permettant de savoir si la matrice est inversible (déterminant nul ⟺ matrice non inversible).</p>
+<p data-cat="algebra"><strong>Trace :</strong> Somme des éléments diagonaux d’une matrice carrée, équivalente à la somme de ses valeurs propres. Utilisée en statistiques et en optimisation.</p>
+<p data-cat="algebra"><strong>Matrice définie positive :</strong> Matrice symétrique pour laquelle xᵀAx > 0 pour tout vecteur non nul x. Garantit que la forme quadratique associée est strictement positive.</p>
+<p data-cat="algebra"><strong>Semi-définie positive :</strong> Matrice symétrique pour laquelle xᵀAx ≥ 0 pour tout vecteur x. Les matrices de covariance sont typiquement semi-définies positives.</p>
+<p data-cat="algebra"><strong>Orthogonalité :</strong> Relation entre deux vecteurs dont le produit scalaire est nul. Implique que les vecteurs sont perpendiculaires dans l’espace vectoriel.</p>
+<p data-cat="algebra"><strong>Base orthonormée :</strong> Ensemble de vecteurs unitaires et mutuellement orthogonaux formant une base d’un espace vectoriel. Simplifie les calculs de projection et de transformation.</p>
+<p data-cat="algebra"><strong>Projection :</strong> Transformation d’un vecteur sur un sous-espace, conservant la composante parallèle et éliminant la composante orthogonale.</p>
+<p data-cat="algebra"><strong>Décomposition LU :</strong> Factorisation d’une matrice en produit d’une matrice triangulaire inférieure (L) et d’une matrice triangulaire supérieure (U), utilisée pour résoudre efficacement des systèmes d’équations linéaires.</p>
+<p data-cat="algebra"><strong>Cholesky :</strong> Décomposition d’une matrice symétrique définie positive en produit LLᵀ, où L est triangulaire inférieure. Méthode rapide et stable pour l’inversion et la résolution de systèmes.</p>
+<p data-cat="algebra"><strong>Gradient :</strong> Vecteur des dérivées partielles d’une fonction multivariable, pointant dans la direction de la plus forte augmentation de la fonction.</p>
+<p data-cat="algebra"><strong>Jacobien :</strong> Matrice contenant les dérivées partielles premières d’un vecteur-fonction par rapport à ses variables. Décrit les variations locales d’une transformation multivariable.</p>
+<p data-cat="algebra"><strong>Hessien :</strong> Matrice des dérivées secondes d’une fonction scalaire multivariable, décrivant la courbure locale. Utilisée pour analyser la convexité et optimiser les fonctions.</p>
+<p data-cat="timeseries"><strong>Stationnarité :</strong> Propriété d’une série temporelle dont la distribution statistique (moyenne, variance, autocorrélation) reste constante dans le temps. Condition souvent nécessaire pour certains modèles.</p>
+<p data-cat="timeseries"><strong>Saisonnalité :</strong> Présence de motifs qui se répètent à intervalles réguliers (jour, semaine, année). Courante dans les données économiques ou météorologiques.</p>
+<p data-cat="timeseries"><strong>Tendance :</strong> Composante à long terme de la série, représentant une hausse ou une baisse globale sur la période observée.</p>
+<p data-cat="timeseries"><strong>ACF (Autocorrelation Function) :</strong> Fonction mesurant la corrélation entre la série et ses propres valeurs décalées dans le temps. Utilisée pour détecter les dépendances temporelles.</p>
+<p data-cat="timeseries"><strong>PACF (Partial Autocorrelation Function) :</strong> Mesure de la corrélation entre la série et ses retards, en éliminant l’effet des retards intermédiaires. Sert à identifier l’ordre d’un modèle AR.</p>
+<p data-cat="timeseries"><strong>AR(p) :</strong> Modèle autorégressif où la valeur actuelle dépend d’une combinaison linéaire de ses p valeurs passées et d’un terme d’erreur aléatoire.</p>
+<p data-cat="timeseries"><strong>MA(q) :</strong> Modèle à moyenne mobile où la valeur actuelle dépend d’une combinaison linéaire des q dernières erreurs aléatoires.</p>
+<p data-cat="timeseries"><strong>ARMA(p,q) :</strong> Modèle combinant une composante autorégressive (AR) et une composante à moyenne mobile (MA), adapté aux séries stationnaires.</p>
+<p data-cat="timeseries"><strong>ARIMA(p,d,q) :</strong> Extension d’ARMA intégrant une différenciation d’ordre d pour rendre la série stationnaire. Très utilisé en prévision.</p>
+<p data-cat="timeseries"><strong>Lissage exponentiel :</strong> Méthode de prévision donnant plus de poids aux observations récentes via un facteur d’atténuation exponentiel.</p>
+<p data-cat="timeseries"><strong>ETS :</strong> Famille de modèles combinant Erreur, Tendance et Saisonnalité, de manière additive ou multiplicative, pour modéliser des séries temporelles.</p>
+<p data-cat="abtest"><strong>Randomisation :</strong> Attribution aléatoire des sujets ou unités aux groupes de traitement et de contrôle, afin de réduire les biais et équilibrer les facteurs confondants.</p>
+<p data-cat="abtest"><strong>Groupe contrôle :</strong> Ensemble de sujets ne recevant pas l’intervention testée, servant de référence pour mesurer l’effet du traitement.</p>
+<p data-cat="abtest"><strong>Effet traitement vs effet levier :</strong> Différencier l’impact réel de l’intervention de simples effets liés à l’exposition ou à la sélection des participants.</p>
+<p data-cat="abtest"><strong>P-hacking :</strong> Manipulation des analyses statistiques ou sélection opportuniste des données pour obtenir artificiellement des résultats significatifs.</p>
+<p data-cat="abtest"><strong>Test séquentiel :</strong> Méthode permettant d’analyser les résultats à intervalles réguliers pendant l’expérimentation, avec ajustement du seuil statistique pour contrôler le risque d’erreur de type I.</p>
+<p data-cat="abtest"><strong>Taille d’échantillon :</strong> Nombre minimal d’observations nécessaire pour garantir une puissance statistique suffisante et détecter un effet d’ampleur donnée.</p>
+<p data-cat="proba"><strong>Théorème central limite (Central Limit Theorem) :</strong> Théorème stipulant que, pour un grand nombre de variables aléatoires indépendantes et identiquement distribuées (i.i.d.) ayant une variance finie, la distribution de leur somme ou de leur moyenne tend vers une loi normale, quelle que soit la distribution d’origine.</p>
+
+    </div>
+  </div>
+</section>
+ <!-- Palette de commandes (⌘K / Ctrl‑K) -->
+<div id="cmdk" class="cmdk" role="dialog" aria-modal="true" hidden>
+  <div class="cmdk-box">
+    <input id="cmdk-input" type="search" placeholder="Rechercher (sections & termes)…" aria-label="Palette de commandes" />
+    <ul id="cmdk-results" class="cmdk-results" role="listbox" aria-label="Résultats"></ul>
+    <div class="cmdk-hint">↑↓ pour naviguer • Entrée pour ouvrir • Tab pour auto‑compléter • Échap pour fermer</div>
+  </div>
+</div>
+
+<!-- Zone toasts -->
+<div id="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+
+ <section id="simulations" class="reveal d2" hidden>
+  <div class="card">
+    <h2 class="h1">Simulations interactives</h2>
+    <p class="sub">Choisis une loi, règle les paramètres et observe sa PDF (continue) ou PMF (discrète).</p>
+
+    <div class="sim-toolbar">
+      <label class="sim-field">
+        <span>Distribution</span>
+        <select id="simDist">
+          <!-- Continues -->
+          <option value="normal">Normale (μ, σ)</option>
+          <option value="uniform">Uniforme [a, b]</option>
+          <option value="lognormal">Log-normale (μ, σ)</option>
+          <option value="chisq">Chi-deux (ν)</option>
+          <option value="student">Student t (ν)</option>
+          <option value="f">Fisher F (ν₁, ν₂)</option>
+          <option value="beta">Beta (α, β)</option>
+          <option value="gamma">Gamma (k, λ)</option>
+          <option disabled>──────────</option>
+          <!-- Discrètes -->
+          <option value="bernoulli">Bernoulli (p)</option>
+          <option value="binomial">Binomiale (n, p)</option>
+          <option value="poisson">Poisson (λ)</option>
+          <option value="geometric">Géométrique (p)</option>
+          <option value="hypergeo">Hypergéométrique (N, K, n)</option>
+          <option value="nbinom">Binomiale négative (r, p)</option>
+          <option value="exponential">Exponentielle (λ)</option>
+        </select>
+      </label>
+
+      <div id="simParams" class="sim-params"><!-- paramètres injectés --></div>
+
+      <div class="sim-actions">
+        <button class="btn" id="simReset">Réinitialiser</button>
+        <button class="btn" id="simAnimate">Animer</button>
+      </div>
+    </div>
+
+    <div class="sim-chart" style="height: 360px;">
+      <canvas id="simChart" aria-label="Graphique de la distribution"></canvas>
+    </div>
+
+    <div class="sim-stats">
+      <div class="stat"><span class="label">Moyenne</span><span id="simMean" class="val">—</span></div>
+      <div class="stat"><span class="label">Variance</span><span id="simVar" class="val">—</span></div>
+      <div class="stat"><span class="label">Type</span><span id="simType" class="val">—</span></div>
+    </div>
+  </div>
+</section>
+
+
+    <footer class="reveal d3">© SINGH 2025 – 2026 • Université Paris Cité</footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
