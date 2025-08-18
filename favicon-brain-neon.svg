@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <!-- Neon glow -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="neonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#7C4DFF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- subtle dark outline to help on light backgrounds -->
+  <g opacity="0.85" stroke="#000000" stroke-width="10" fill="none">
+    <path d="M64 22
+             c-10 0-18 8-18 18
+             c-6 2-10 8-10 14
+             c0 6 3 11 8 14
+             c-3 3-5 7-5 12
+             c0 10 9 18 19 18
+             h6
+             c8 0 15-7 15-15
+             v-2
+             c6-2 11-8 11-15
+             c0-5-2-9-6-12
+             c2-3 3-6 3-9
+             c0-13-10-23-23-23z" />
+    <!-- left fissures -->
+    <path d="M46 40 c6 2 10 6 12 12" />
+    <path d="M44 66 c6 0 12 3 16 8" />
+    <!-- right fissures -->
+    <path d="M82 40 c-6 2-10 6-12 12" />
+    <path d="M84 66 c-6 0-12 3-16 8" />
+  </g>
+
+  <!-- neon brain -->
+  <g filter="url(#glow)" stroke="url(#neonGrad)" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path stroke-width="8" d="M64 22
+             c-10 0-18 8-18 18
+             c-6 2-10 8-10 14
+             c0 6 3 11 8 14
+             c-3 3-5 7-5 12
+             c0 10 9 18 19 18
+             h6
+             c8 0 15-7 15-15
+             v-2
+             c6-2 11-8 11-15
+             c0-5-2-9-6-12
+             c2-3 3-6 3-9
+             c0-13-10-23-23-23z" />
+    <!-- fissures -->
+    <path stroke-width="6" d="M46 40 c6 2 10 6 12 12" />
+    <path stroke-width="6" d="M44 66 c6 0 12 3 16 8" />
+    <path stroke-width="6" d="M82 40 c-6 2-10 6-12 12" />
+    <path stroke-width="6" d="M84 66 c-6 0-12 3-16 8" />
+  </g>
+</svg>
