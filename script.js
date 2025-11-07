@@ -1225,7 +1225,7 @@ function runCountdown(date){
     renderView();
   });
 
-  // écoute de l'historique
+    // écoute de l'historique
   if (historyList) {
     db.collection("history")
       .orderBy("archivedAt", "desc")
@@ -1236,18 +1236,51 @@ function runCountdown(date){
           historyList.textContent = "(rien dans l'historique)";
           return;
         }
+
         snap.forEach(doc => {
           const data = doc.data();
           const item = document.createElement("div");
           item.className = "history-item";
-          item.innerHTML = `
+
+          // texte + meta
+          let inner = `
             <div>${data.text}</div>
-            <div class="history-meta">📦 Archivé le ${formatTimestamp(data.archivedAt)} par ${data.archivedBy}</div>
+            <div class="history-meta">
+              📦 Archivé le ${formatTimestamp(data.archivedAt)} par ${data.archivedBy}
+            </div>
           `;
+
+          // si c'est toi (owner) → on ajoute un bouton de suppression
+          if (currentUserUid === OWNER_UID) {
+            inner += `
+              <button class="btn history-delete-btn" data-id="${doc.id}" style="margin-top:4px; padding:2px 8px; font-size:0.7rem;">
+                🗑 Supprimer
+              </button>
+            `;
+          }
+
+          item.innerHTML = inner;
           historyList.appendChild(item);
         });
+
+        // brancher les boutons "supprimer" si tu es owner
+        if (currentUserUid === OWNER_UID) {
+          const deleteButtons = historyList.querySelectorAll('.history-delete-btn');
+          deleteButtons.forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+              const id = btn.dataset.id;
+              if (!confirm("Supprimer définitivement cette entrée de l'historique ?")) return;
+              try {
+                await db.collection("history").doc(id).delete();
+              } catch (err) {
+                alert("Erreur lors de la suppression : " + err.message);
+              }
+            });
+          });
+        }
       });
   }
+
 
   // utilitaire : renvoie les lignes non vides sous forme de set
   function linesToSet(str){
