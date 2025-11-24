@@ -23,10 +23,9 @@ const setTheme = (t) => {
 
 const stored = localStorage.getItem('themePref');
 if (stored) {
-  setTheme(stored);
+  setTheme(stored); 
 } else {
-  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-  setTheme(prefersLight ? 'light' : 'dark');
+  setTheme('dark'); 
 }
 
 themeToggle.addEventListener('click', ()=>{
