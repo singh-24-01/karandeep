@@ -805,12 +805,22 @@ header, main, footer{ position: relative; z-index: 1; }
   align-items: start;
 }
 
-
-@media (max-width: 980px){
+/* Mobile / petites tablettes : tout en colonne, 100% largeur */
+@media (max-width: 900px) {
   .planning-layout {
-    grid-template-columns: 1fr;
+    display: block;          /* plus de grille → tout se stack */
+  }
+
+  .planning-layout > * {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .notes-col {
+    max-width: 100%;
   }
 }
+
 
 .notes-col {
   position: relative;
